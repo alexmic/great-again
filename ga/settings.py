@@ -15,3 +15,6 @@ BOSS_APP_ID = 'IDBmgktA7c'
 BOSS_KEY = env.get('GA_BOSS_KEY')
 BOSS_SECRET = env.get('GA_BOSS_SECRET')
 BOSS_IMAGE_URL = 'https://yboss.yahooapis.com/ysearch/images'
+
+IMAGE_HEIGHT = 700
+IMAGE_WIDTH = 700

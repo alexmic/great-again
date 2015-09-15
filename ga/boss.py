@@ -12,7 +12,7 @@ class BossImage(object):
         self.height = int(obj['height'])
 
 
-def image_url_for_term(term, minimum_width=1000):
+def image_url_for_term(term, minimum_width=settings.IMAGE_WIDTH):
     boss = OAuth1Session(settings.BOSS_KEY, client_secret=settings.BOSS_SECRET)
 
     params = {'q': term, 'dimensions': 'large'}
