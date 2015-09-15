@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from StringIO import StringIO
-
-import requests
 from requests_oauthlib import OAuth1Session
-
 from ga import settings
 
 
@@ -15,12 +11,8 @@ class BossImage(object):
         self.width = int(obj['width'])
         self.height = int(obj['height'])
 
-    def stream(self):
-        r = requests.get(self.url)
-        return StringIO(r.content)
 
-
-def image_for_term(term, minimum_width=1000):
+def image_url_for_term(term, minimum_width=1000):
     boss = OAuth1Session(settings.BOSS_KEY, client_secret=settings.BOSS_SECRET)
 
     params = {'q': term, 'dimensions': 'large'}
@@ -30,6 +22,6 @@ def image_for_term(term, minimum_width=1000):
     for result in results:
         img = BossImage(result)
         if img.width >= minimum_width:
-            return img.stream()
+            return img.url
 
     return None
