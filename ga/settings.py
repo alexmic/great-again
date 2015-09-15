@@ -3,7 +3,7 @@
 import os
 env = os.environ
 
-PROJECT_ROOT = env.get('GA_PROJECT_ROOT', 'ga')
+PROJECT_ROOT = env.get('GA_PROJECT_ROOT', 'great-again')
 
 DEBUG = env.get('GA_DEBUG', 'true') == 'true'
 TESTING = env.get('GA_TESTING', '') == 'true'
@@ -16,5 +16,4 @@ BOSS_KEY = env.get('GA_BOSS_KEY')
 BOSS_SECRET = env.get('GA_BOSS_SECRET')
 BOSS_IMAGE_URL = 'https://yboss.yahooapis.com/ysearch/images'
 
-IMAGE_HEIGHT = 700
-IMAGE_WIDTH = 700
+IMAGE_SIDE = 700
