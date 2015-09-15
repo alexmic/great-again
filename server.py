@@ -16,7 +16,7 @@ app = create_app()
 
 if __name__ == '__main__':
     @run_with_reloader
-    def run(interface='0.0.0.0', port=8000):
+    def run(interface='0.0.0.0', port=5000):
         print u" * Server is running at %s:%s" % (interface, port)
 
         wsgi = DebuggedApplication(app)
