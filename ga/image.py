@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 
-import StringIO
+import cStringIO
+import urllib
 from collections import namedtuple
 from itertools import izip_longest
 
 from PIL import Image, ImageFont, ImageDraw
 
 from ga import settings
+from ga.utils import get_resource_path
 
 
-BORDER = Image.open('border.png')
+BORDER = Image.open(get_resource_path('images/border.png'))
 
 
 class Banner(object):
@@ -18,21 +20,20 @@ class Banner(object):
     Line = namedtuple('Line', ['x', 'y', 'w', 'h', 'font', 'text'])
 
     DEFAULT_TEXT_FONT = 'Montserrat-Regular.otf'
-    CUSTOM_TEXT_FONT = 'OldStandard-Regular.ttf'
-
     DEFAULT_TEXT_ABOVE = u'M A K E'
     DEFAULT_TEXT_BELOW = u'G R E A T  A G A I N !'
     DEFAULT_TEXT_FONT_SIZE = 28
+    DEFAULT_TEXT_PADDING = 0
 
-    STARTING_Y_OFFSET = 30
+    CUSTOM_TEXT_FONT = 'OldStandard-Regular.ttf'
+    CUSTOM_TEXT_PADDING = 10
 
-    MAX_FONT_SIZE = 75
-    MAX_LINE_SPACING = 15
+    STARTING_Y_OFFSET = 60
 
+    MAX_FONT_SIZE = 90
     MIN_FONT_SIZE = 40
-    MIN_LINE_SPACING = 78
 
-    def __init__(self, custom_text, image_width=620):
+    def __init__(self, custom_text, image_width=settings.IMAGE_SIDE):
         self.custom_text = custom_text
         self.image_width = image_width
 
@@ -41,26 +42,38 @@ class Banner(object):
         if hasattr(self, '_lines'):
             return self._lines
 
-        line_config = [
-            (self.DEFAULT_TEXT_ABOVE, self.DEFAULT_TEXT_FONT, self.DEFAULT_TEXT_FONT_SIZE)
-        ]
+        line_config = [(
+            self.DEFAULT_TEXT_ABOVE,
+            self.DEFAULT_TEXT_FONT,
+            self.DEFAULT_TEXT_FONT_SIZE,
+            self.DEFAULT_TEXT_PADDING
+        )]
 
         custom_text_font_size = self._get_custom_text_font_size()
         for line in self._split_custom_text_in_lines():
-            line_config.append((line, self.CUSTOM_TEXT_FONT, custom_text_font_size))
+            line_config.append((
+                line,
+                self.CUSTOM_TEXT_FONT,
+                custom_text_font_size,
+                self.CUSTOM_TEXT_PADDING
+            ))
 
-        line_config.append(
-            (self.DEFAULT_TEXT_BELOW, self.DEFAULT_TEXT_FONT, self.DEFAULT_TEXT_FONT_SIZE)
-        )
+        line_config.append((
+            self.DEFAULT_TEXT_BELOW,
+            self.DEFAULT_TEXT_FONT,
+            self.DEFAULT_TEXT_FONT_SIZE,
+            self.DEFAULT_TEXT_PADDING
+        ))
 
         lines = []
         y_offset = self.STARTING_Y_OFFSET
-        for text, font_name, font_size in line_config:
-            font = ImageFont.truetype(font_name, font_size)
+        for text, font_name, font_size, padding in line_config:
+            font_path = get_resource_path('fonts/' + font_name)
+            font = ImageFont.truetype(font_path, font_size)
             tw, th = font.getsize(text)
             x, y = (self.image_width - tw) // 2, y_offset
             lines.append(self.Line(x=x, y=y, w=tw, h=th, font=font, text=text))
-            y_offset += th
+            y_offset += th + padding
 
         self._lines = lines
         return self._lines
@@ -92,26 +105,42 @@ class Banner(object):
         lct = len(self.custom_text)
         if lct <= 32:
             return [self.custom_text]
-        iterlist = [iter(self.custom_text.split())] * 4
+        iterlist = [iter(self.custom_text.split())] * 3
         return [' '.join(filter(None, il)) for il in izip_longest(*iterlist)]
 
 
-def trumpify_image(image, term):
-    image = Image.open(image)
+def trumpify_image_from_url(url, term):
+    image = get_image_from_url(url)
+    image = center_crop(resize(image))
     draw = ImageDraw.Draw(image)
 
-    iw, ih = image.size
-    banner = Banner(term.upper(), image_width=iw)
+    banner = Banner(term.upper())
 
     for line in banner.lines:
         draw.text((line.x, line.y), line.text, font=line.font)
 
-    border_box = (0, 0, settings.IMAGE_WIDTH, settings.IMAGE_HEIGHT)
+    border_box = (0, 0, settings.IMAGE_SIDE, settings.IMAGE_SIDE)
     image.paste(BORDER, border_box, BORDER)
 
-    out = StringIO.StringIO()
-    image.save(out)
-    contents = out.getvalue()
-    out.close()
+    return image
 
-    return contents
+
+def get_image_from_url(url):
+    contents = cStringIO.StringIO(urllib.urlopen(url).read())
+    return Image.open(contents)
+
+
+def resize(image, side=settings.IMAGE_SIDE):
+    iw, ih = image.size
+    if iw < ih:
+        w, h = side, ih * side / iw
+    else:
+        w, h = iw * side / ih, side
+    return image.resize(map(int, (w, h)))
+
+
+def center_crop(image, side=settings.IMAGE_SIDE):
+    iw, ih = image.size
+    left, upper = (iw - side) // 2, (ih - side) // 2
+    right, lower = (iw + side) // 2, (ih + side) // 2
+    return image.crop((left, upper, right, lower))
