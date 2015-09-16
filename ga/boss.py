@@ -51,22 +51,18 @@ def _is_valid_boss_result(result, min_size):
 
 
 def _pick_readable_images(results):
-    images, offset, batch_size = [], 0, 3
+    images, index, batch_size = [], 0, 3
     urls = [r['url'] for r in results]
 
-    while not images:
-        batch = urls[offset:offset + batch_size]
-
-        # Our batch is empty, if we have no images so far we will not get any.
-        if not batch:
-            break
+    while index < len(urls):
+        batch = urls[index:index + batch_size]
+        index += batch_size
 
         reqs = (grequests.get(url, timeout=1, allow_redirects=False) for url in batch)
 
         with timing('grequests.map'):
             responses = grequests.map(reqs)
 
-        images = []
         for resp in responses:
             if resp is None or resp.status_code != 200:
                 continue
@@ -75,5 +71,8 @@ def _pick_readable_images(results):
                 images.append(image)
             except IOError:
                 continue
+
+        if images:
+            break
 
     return images
