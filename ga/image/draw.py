@@ -2,8 +2,6 @@
 
 from __future__ import division
 
-import cStringIO
-import urllib
 from collections import namedtuple
 from itertools import izip_longest
 
@@ -110,8 +108,7 @@ class Banner(object):
         return [' '.join(filter(None, il)) for il in izip_longest(*iterlist)]
 
 
-def trumpify_image_from_url(url, term):
-    image = get_image_from_url(url)
+def trumpify_image_from_url(image, term):
     image = center_crop(resize(image))
     draw = ImageDraw.Draw(image)
 
@@ -124,11 +121,6 @@ def trumpify_image_from_url(url, term):
     image.paste(BORDER, border_box, BORDER)
 
     return image
-
-
-def get_image_from_url(url):
-    contents = cStringIO.StringIO(urllib.urlopen(url).read())
-    return Image.open(contents)
 
 
 def resize(image, side=settings.IMAGE_SIDE):
