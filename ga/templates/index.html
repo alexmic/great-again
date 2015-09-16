@@ -36,12 +36,13 @@ $('#fieldForm').submit(function(event, bypass) {
 
     $.post('/submit', $(this).serialize())
     .done(function() {
-        $('#fieldForm').trigger('submit',[true])
-    })
-    .always(function() {
-        $('#main').show();
-        $('#loader').hide();
+        $('#fieldForm').trigger('submit',[true]);
     });
+});
+
+$(window).bind("pageshow", function(event) {
+    $('#main').show();
+    $('#loader').hide();
 });
 </script>
 
