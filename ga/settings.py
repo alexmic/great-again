@@ -20,8 +20,6 @@ AWS_BUCKET = 'great-again'
 AWS_KEY = env.get('GA_AWS_KEY')
 AWS_SECRET = env.get('GA_AWS_SECRET')
 
-REDIS_HOST = env.get('GA_REDIS_HOST', 'localhost')
-REDIS_PORT = env.get('GA_REDIS_PORT', 6379)
-REDIS_PASSWORD = None
+REDIS_URL = env.get('REDIS_URL', 'localhost:6379')
 
 IMAGE_SIDE = 700
