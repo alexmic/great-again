@@ -11,12 +11,12 @@ redis_client = redis.from_url(settings.REDIS_URL)
 class CacheDecorator(object):
 
     def __init__(self, prefix=None, postfix=None):
-        self.prefix = _utf8(prefix + ':' if prefix else '')
-        self.postfix = _utf8(':' + postfix if postfix else '')
+        self.prefix = prefix
+        self.postfix = postfix
 
     def __call__(self, fn):
         def wrapper(*args):
-            key = self._make_key(*args)
+            key = _make_key_from_args(*args, prefix=self.prefix, postfix=self.postfix)
             value = redis_client.get(key)
             if not value:
                 value = fn(*args)
@@ -25,20 +25,29 @@ class CacheDecorator(object):
 
         return wrapper
 
-    def _make_key(self, *args):
-        key = _make_key_from_args(*args)
-        return self.prefix + key + self.postfix
+
+memoize = CacheDecorator
 
 
-cache = CacheDecorator
+def incr(*args, **kwargs):
+    key = _make_key_from_args(*args, **kwargs)
+    redis_client.incr(key)
 
 
-def _make_key_from_args(*args):
+def _make_key_from_args(*args, **kwargs):
+    prefix = kwargs.pop('prefix', None)
+    postfix = kwargs.pop('postfix', None)
+
+    prefix = _utf8(prefix + ':' if prefix else '')
+    postfix = _utf8(':' + postfix if postfix else '')
+
     def keyify(arg):
-        if not isinstance(arg, basestring):
+        if isinstance(arg, basestring):
             arg = re.sub(r'\s+', '-', _utf8(arg)).lower()
         return arg
-    return '+'.join([keyify(arg) for arg in args])
+
+    key = '+'.join([keyify(arg) for arg in args])
+    return prefix + key + postfix
 
 
 def _utf8(arg):
