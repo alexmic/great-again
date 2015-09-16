@@ -2,6 +2,7 @@
 
 import json
 import os
+from contextlib import contextmanager
 
 from ga import settings
 
@@ -32,3 +33,11 @@ def read_resource_file(filename, from_json=True):
     with open(path) as data_file:
         contents = data_file.read()
         return json.loads(contents) if from_json else contents
+
+
+@contextmanager
+def timing(name):
+    import time
+    start = time.time()
+    yield
+    print "Timing: name=%s, took=%.2fs" % (name, time.time() - start)
