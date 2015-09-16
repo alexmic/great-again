@@ -11,6 +11,7 @@ class BossImage(object):
         self.url = obj['url']
         self.width = int(obj['width'])
         self.height = int(obj['height'])
+        self.format = obj['format']
 
 
 def image_url_for_term(term, minimum_side=settings.IMAGE_SIDE):
@@ -21,7 +22,9 @@ def image_url_for_term(term, minimum_side=settings.IMAGE_SIDE):
     results = response['bossresponse']['images']['results']
 
     def is_valid(i):
-        return i.width >= minimum_side and i.height >= minimum_side
+        return (i.width >= minimum_side and
+                i.height >= minimum_side and
+                i.format in ['jpeg','jpg'])
 
     images = [BossImage(r) for r in results]
     choice = random.choice([i for i in images if is_valid(i)])
