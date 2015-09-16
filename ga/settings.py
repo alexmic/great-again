@@ -16,4 +16,8 @@ BOSS_KEY = env.get('GA_BOSS_KEY')
 BOSS_SECRET = env.get('GA_BOSS_SECRET')
 BOSS_IMAGE_URL = 'https://yboss.yahooapis.com/ysearch/images'
 
+CLOUDINARY_NAME = env.get('GA_CLOUDINARY_NAME')
+CLOUDINARY_KEY = env.get('GA_CLOUDINARY_KEY')
+CLOUDINARY_SECRET = env.get('GA_CLOUDINARY_SECRET')
+
 IMAGE_SIDE = 700
