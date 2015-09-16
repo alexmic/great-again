@@ -34,7 +34,7 @@ $('#fieldForm').submit(function(event, bypass) {
         $('#loader').fadeIn(300);
     });
 
-    $.post('/redirect', $(this).serialize())
+    $.post('/submit', $(this).serialize())
     .done(function() {
         $('#fieldForm').trigger('submit',[true])
     })
