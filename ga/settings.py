@@ -16,9 +16,9 @@ BOSS_KEY = env.get('GA_BOSS_KEY')
 BOSS_SECRET = env.get('GA_BOSS_SECRET')
 BOSS_IMAGE_URL = 'https://yboss.yahooapis.com/ysearch/images'
 
-CLOUDINARY_NAME = 'great-again'
-CLOUDINARY_KEY = env.get('GA_CLOUDINARY_KEY')
-CLOUDINARY_SECRET = env.get('GA_CLOUDINARY_SECRET')
+AWS_BUCKET = 'great-again'
+AWS_KEY = env.get('GA_AWS_KEY')
+AWS_SECRET = env.get('GA_AWS_SECRET')
 
 REDIS_HOST = env.get('GA_REDIS_HOST', 'localhost')
 REDIS_PORT = env.get('GA_REDIS_PORT', 6379)
