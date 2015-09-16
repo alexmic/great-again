@@ -3,6 +3,8 @@
     <head>
         <link href='https://fonts.googleapis.com/css?family=Montserrat|Old+Standard+TT' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        {% block head %}{% endblock %}
         <title>{% block title %}{% endblock %}</title>
     </head>
     <body>

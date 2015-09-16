@@ -1,18 +1,48 @@
 {% extends "layout.html" %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='spinner.css') }}">
+{% endblock %}
+
 {% block title %}Make Anything Great Again!{% endblock %}
 {% block content %}
 
-<div class="hero">
+<div class="hero" id="main">
 Make
     <div class="heroForm">
-        <form method="POST" action="/redirect">
+        <form id="fieldForm" method="POST" action="/redirect">
             <input name="term" type="text" class="heroField" placeholder="Anything" />
         </form>
     </div>
 Great again!
 </div>
 
+<div class="hero" id="loader" style="display:none;">
+This is gonna
+{% include "spinner.html" %}
+be huge!
+</div>
+
 <div class="recents">
 </div>
+
+<script type="text/javascript">
+$('#fieldForm').submit(function(event, bypass) {
+    if (bypass) return true;
+
+    event.preventDefault();
+    $('#main').fadeOut(300,function(completion) {
+        $('#loader').fadeIn(300);
+    });
+
+    $.post('/redirect', $(this).serialize())
+    .done(function() {
+        $('#fieldForm').trigger('submit',[true])
+    })
+    .always(function() {
+        $('#main').show();
+        $('#loader').hide();
+    });
+});
+</script>
 
 {% endblock %}

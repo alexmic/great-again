@@ -1,0 +1,98 @@
+#noTrespassingOuterBarG{
+    height:50px;
+    width:400px;
+    border:3px solid rgb(0,0,0);
+    overflow:hidden;
+    background-color:rgb(255,255,255);
+    margin:auto;
+}
+
+.noTrespassingBarLineG{
+    background-color:rgb(0,0,0);
+    float:left;
+    width:35px;
+    height:300px;
+    margin-right:60px;
+    margin-top:-70px;
+    transform:rotate(45deg);
+        -o-transform:rotate(45deg);
+        -ms-transform:rotate(45deg);
+        -webkit-transform:rotate(45deg);
+        -moz-transform:rotate(45deg);
+}
+
+.noTrespassingAnimationG{
+    width:590px;
+    animation-name:noTrespassingAnimationG;
+        -o-animation-name:noTrespassingAnimationG;
+        -ms-animation-name:noTrespassingAnimationG;
+        -webkit-animation-name:noTrespassingAnimationG;
+        -moz-animation-name:noTrespassingAnimationG;
+    animation-duration:1.5s;
+        -o-animation-duration:1.5s;
+        -ms-animation-duration:1.5s;
+        -webkit-animation-duration:1.5s;
+        -moz-animation-duration:1.5s;
+    animation-iteration-count:infinite;
+        -o-animation-iteration-count:infinite;
+        -ms-animation-iteration-count:infinite;
+        -webkit-animation-iteration-count:infinite;
+        -moz-animation-iteration-count:infinite;
+    animation-timing-function:linear;
+        -o-animation-timing-function:linear;
+        -ms-animation-timing-function:linear;
+        -webkit-animation-timing-function:linear;
+        -moz-animation-timing-function:linear;
+}
+
+
+
+@keyframes noTrespassingAnimationG{
+    0%{
+        margin-left:0px;
+    }
+
+    100%{
+        margin-left:-95px;
+    }
+}
+
+@-o-keyframes noTrespassingAnimationG{
+    0%{
+        margin-left:0px;
+    }
+
+    100%{
+        margin-left:-95px;
+    }
+}
+
+@-ms-keyframes noTrespassingAnimationG{
+    0%{
+        margin-left:0px;
+    }
+
+    100%{
+        margin-left:-95px;
+    }
+}
+
+@-webkit-keyframes noTrespassingAnimationG{
+    0%{
+        margin-left:0px;
+    }
+
+    100%{
+        margin-left:-95px;
+    }
+}
+
+@-moz-keyframes noTrespassingAnimationG{
+    0%{
+        margin-left:0px;
+    }
+
+    100%{
+        margin-left:-95px;
+    }
+}
