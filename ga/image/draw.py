@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import division
 
 import cStringIO
@@ -7,19 +8,10 @@ from collections import namedtuple
 from itertools import izip_longest
 
 from PIL import Image, ImageFont, ImageDraw
-import cloudinary
-import cloudinary.uploader
 
 from ga import settings
 from ga.utils import get_resource_path
 
-from ga import settings
-
-cloudinary.config(
-    cloud_name = settings.CLOUDINARY_NAME,
-    api_key = settings.CLOUDINARY_KEY,  
-    api_secret = settings.CLOUDINARY_SECRET  
-)
 
 BORDER = Image.open(get_resource_path('images/border.png'))
 
@@ -153,11 +145,3 @@ def center_crop(image, side=settings.IMAGE_SIDE):
     left, upper = (iw - side) // 2, (ih - side) // 2
     right, lower = (iw + side) // 2, (ih + side) // 2
     return image.crop((left, upper, right, lower))
-
-
-# Image upload
-
-
-def upload_image(stream):
-    result = cloudinary.uploader.upload(stream)
-    return result['url']
