@@ -12,6 +12,7 @@ from ga.utils import get_resource_path
 
 
 BORDER = Image.open(get_resource_path('images/border.png'))
+OVERLAY = Image.open(get_resource_path('images/overlay.png'))
 
 
 class Banner(object):
@@ -111,6 +112,9 @@ class Banner(object):
 def trumpify_image_from_url(image, term):
     image = center_crop(resize(image))
     draw = ImageDraw.Draw(image)
+
+    overlay_box = (0, 0, settings.IMAGE_SIDE, settings.IMAGE_SIDE)
+    image.paste(OVERLAY, overlay_box, OVERLAY)
 
     banner = Banner(term.upper())
 
