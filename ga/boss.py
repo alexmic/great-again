@@ -1,35 +1,79 @@
 # -*- coding: utf-8 -*-
 
+from StringIO import StringIO
 import random
 import re
 
+import grequests
 from requests_oauthlib import OAuth1Session
+from PIL import Image
+
 from ga import settings
+from ga.utils import timing
 
-
-class BossImage(object):
-
-    def __init__(self, obj):
-        self.url = obj['url']
-        self.width = int(obj['width'])
-        self.height = int(obj['height'])
-        self.format = obj['format']
 
 def escaped_term(term):
     return re.sub(r'\s+', '+', term).lower()
 
-def image_url_for_term(term, minimum_side=settings.IMAGE_SIDE):
+
+def get_pil_image_for_term(term, minimum_side=settings.IMAGE_SIDE):
     boss = OAuth1Session(settings.BOSS_KEY, client_secret=settings.BOSS_SECRET)
 
     params = {'q': escaped_term(term), 'dimensions': 'large'}
-    response = boss.get(settings.BOSS_IMAGE_URL, params=params).json()
-    results = response['bossresponse']['images']['results']
 
-    def is_valid(i):
-        return (i.width >= minimum_side and
-                i.height >= minimum_side and
-                i.format in ['jpeg','jpg'])
+    with timing('boss.get'):
+        response = boss.get(settings.BOSS_IMAGE_URL, params=params).json()
 
-    images = [BossImage(r) for r in results]
-    choice = random.choice([i for i in images if is_valid(i)])
-    return choice.url if choice else None
+    results = response['bossresponse']['images'].get('results')
+
+    if not results:
+        return None
+
+    results = [r for r in results if _is_valid_boss_result(r, minimum_side)]
+
+    if not results:
+        return None
+
+    with timing('_pick_readable_images'):
+        images = _pick_readable_images(results)
+
+    if not images:
+        return None
+
+    return random.choice(images)
+
+
+def _is_valid_boss_result(result, min_size):
+    width = int(result['width'])
+    height = int(result['height'])
+    format = result['format']
+    return width >= min_size and height >= min_size and format in ['jpeg', 'jpg']
+
+
+def _pick_readable_images(results):
+    images, offset, batch_size = [], 0, 3
+    urls = [r['url'] for r in results]
+
+    while not images:
+        batch = urls[offset:offset + batch_size]
+
+        # Our batch is empty, if we have no images so far we will not get any.
+        if not batch:
+            break
+
+        reqs = (grequests.get(url, timeout=1, allow_redirects=False) for url in batch)
+
+        with timing('grequests.map'):
+            responses = grequests.map(reqs)
+
+        images = []
+        for resp in responses:
+            if resp is None or resp.status_code != 200:
+                continue
+            try:
+                image = Image.open(StringIO(resp.content))
+                images.append(image)
+            except IOError:
+                continue
+
+    return images
