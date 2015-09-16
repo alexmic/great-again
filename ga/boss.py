@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import random
+import re
+
 from requests_oauthlib import OAuth1Session
 from ga import settings
 
@@ -13,11 +15,13 @@ class BossImage(object):
         self.height = int(obj['height'])
         self.format = obj['format']
 
+def escaped_term(term):
+    return re.sub(r'\s+', '+', term).lower()
 
 def image_url_for_term(term, minimum_side=settings.IMAGE_SIDE):
     boss = OAuth1Session(settings.BOSS_KEY, client_secret=settings.BOSS_SECRET)
 
-    params = {'q': term, 'dimensions': 'large'}
+    params = {'q': escaped_term(term), 'dimensions': 'large'}
     response = boss.get(settings.BOSS_IMAGE_URL, params=params).json()
     results = response['bossresponse']['images']['results']
 
