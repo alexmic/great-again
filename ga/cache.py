@@ -47,7 +47,6 @@ def _make_key_from_args(*args):
 
 def _utf8(arg):
     if isinstance(arg, unicode):
-        print "UNICODE"
         # Always convert our keys utf8 bytestrings and make sure we don't
         # crash if we cannot.
         arg = arg.encode('utf-8', 'ignore')
