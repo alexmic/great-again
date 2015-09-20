@@ -15,4 +15,4 @@ based on the term length and creates the image.
 
 ### Example
 
-![Porridge](http://great-again.s3.amazonaws.com/cVnSfEo4DzMcVBFmFZvUt9.jpg)
+![Porridge](http://great-again.s3.amazonaws.com/7MY2QFzPBuhmC3ykBjqNja.jpg)
