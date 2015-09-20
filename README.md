@@ -15,4 +15,6 @@ based on the term length and creates the image.
 
 ### Example
 
-![Porridge](http://great-again.s3.amazonaws.com/7MY2QFzPBuhmC3ykBjqNja.jpg)
+[greataga.in/java](http://greataga.in/java)
+
+![Cats](http://great-again.s3.amazonaws.com/v8gRCBQ8ewmQjpQy7FZJUW.jpg)
