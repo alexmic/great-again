@@ -20,8 +20,10 @@ def upload_image(stream):
     bucket = conn.get_bucket(settings.AWS_BUCKET)
 
     key = bucket.new_key(shortuuid.uuid() + '.jpg')
-    key.set_contents_from_string(stream.getvalue())
-    key.set_metadata('Content-Type', 'image/jpeg')
+    headers = {'Content-Type': 'image/jpeg'}
+    key.set_contents_from_string(stream.getvalue(), headers=headers)
+    for k, v in headers.items():
+        key.set_metadata(k, v)
     key.set_acl('public-read')
 
     return key.generate_url(expires_in=0, query_auth=False, force_http=True)
