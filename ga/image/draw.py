@@ -98,7 +98,7 @@ class Banner(object):
         lct = len(self.custom_text)
         if lct <= 7:
             return self.MAX_FONT_SIZE
-        size = int(self.MAX_FONT_SIZE - lct * 3.4)
+        size = int(self.MAX_FONT_SIZE - lct * 2.7)
         return max(self.MIN_FONT_SIZE, size)
 
     def _split_custom_text_in_lines(self):
